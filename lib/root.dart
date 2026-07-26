@@ -21,7 +21,12 @@ class _RootState extends State<Root> {
 
   @override
   void initState() {
-    pages = const [HomeView(), CartView(), OrderHistoryView(), ProfileView()];
+    pages = [
+      const HomeView(),
+      const CartView(),
+      OrderHistoryView(),
+      const ProfileView(),
+    ];
     pageController = PageController(initialPage: currentScreen);
     super.initState();
   }
@@ -30,6 +35,7 @@ class _RootState extends State<Root> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView(
+        physics: NeverScrollableScrollPhysics(),
         controller: pageController,
         onPageChanged: (index) {
           setState(() {

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hungry/features/auth/view/login_view.dart';
-import 'package:hungry/features/auth/view/signup_view.dart';
 import 'package:hungry/root.dart';
-import 'package:hungry/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,6 +14,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Hungry App',
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+        ),
+
+        scaffoldBackgroundColor: Colors.white,
+      ),
       home: const Root(),
     );
   }

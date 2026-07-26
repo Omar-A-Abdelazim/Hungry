@@ -1,9 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
-import 'package:hungry/core/constants/app_colors.dart';
-import 'package:hungry/shared/custom_text.dart';
+import 'package:hungry/features/home/widgets/card_item.dart';
+import 'package:hungry/features/home/widgets/custom_search_bar.dart';
+import 'package:hungry/features/home/widgets/food_category.dart';
+import 'package:hungry/features/home/widgets/user_header.dart';
+import 'package:hungry/features/product/view/product_detail_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -15,106 +16,86 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   List category = ["All", "Combos", "Sliders", "Classic"];
   int selectedCategory = 0;
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          child: Column(
-            children: [
-              const Gap(25),
-              Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: .start,
-                    children: [
-                      SvgPicture.asset(
-                        "assets/logo/hungry.svg",
-                        color: AppColors.primary,
-                        height: 35,
-                      ),
-                      Gap(5),
-                      CustomText(
-                        text: "hello, Omar Ahmed",
-                        fontSize: 16,
-                        fontWeight: .w600,
-                        color: Colors.grey.shade500,
-                      ),
-                    ],
-                  ),
-                  Spacer(),
-                  CircleAvatar(radius: 30),
-                ],
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              elevation: 0,
+              pinned: true,
+              floating: false,
+              scrolledUnderElevation: 0,
+              backgroundColor: Colors.white,
+              toolbarHeight: 140,
+              automaticallyImplyLeading: false,
+              flexibleSpace: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                child: UserHeader(),
               ),
-              Gap(20),
-              // Search bar
-              Material(
-                elevation: 5,
-                shadowColor: Colors.grey,
-                borderRadius: BorderRadius.circular(15),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: "Search..",
-                    prefixIcon: Icon(CupertinoIcons.search),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                  ),
-                ),
-              ),
-              Gap(20),
-              SingleChildScrollView(
-                scrollDirection: .horizontal,
-                child: Row(
-                  children: List.generate(category.length, (index) {
-                    return GestureDetector(
-                      onTap: () {
+            ),
+
+            // App Bar
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Column(
+                  children: [
+                    const Gap(25),
+                    // Search bar
+                    CustomSearchBar(),
+                    const Gap(25),
+                    FoodCategory(
+                      category: category,
+                      selectedCategory: selectedCategory,
+                      onCategorySelected: (index) {
                         setState(() {
-                          selectedCategory = index;
+                          selectedCategory =
+                              index; // ⬅️ التغيير الحقيقي بيحصل هنا بس
                         });
                       },
-                      child: Container(
-                        margin: EdgeInsets.only(right: 10),
-                        decoration: BoxDecoration(
-                          color: selectedCategory == index
-                              ? AppColors.primary
-                              : Color(0xFFF3F4F6),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 27,
-                          vertical: 15,
-                        ),
-                        child: CustomText(
-                          text: category[index],
-                          fontWeight: .w600,
-                          color: selectedCategory == index
-                              ? Colors.white
-                              : Colors.black,
-                        ),
-                      ),
-                    );
-                  }),
+                    ),
+                    Gap(25),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+            // GridView
+            SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              sliver: SliverGrid(
+                delegate: SliverChildBuilderDelegate(childCount: 6, (
+                  context,
+                  index,
+                ) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (c) {
+                            return ProductDetailView();
+                          },
+                        ),
+                      );
+                    },
+                    child: CardItem(
+                      text: "cheeseburger",
+                      description: "Wendy's Burger",
+                      image: "assets/test/test.png",
+                      rate: '4.9',
+                    ),
+                  );
+                }),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.67,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
